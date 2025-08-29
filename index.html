@@ -3,55 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lion Hunter — Legal Library (Local RAG, No-API)</title>
-  <meta name="description" content="Upload statutes, case law, regulations, and workshops/questions. Ask questions and get answers grounded ONLY in your uploaded materials. 100% in-browser. No API required." />
+  <title>Lion Hunter — Ask From Your Docs (Ultra‑Simple, No‑API)</title>
+  <meta name="description" content="Upload a document, ask a question, get an answer grounded only in what you uploaded. 100% in‑browser. No settings. No API." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{--brand:#0ea5e9;--ink:#0f172a;--muted:#64748b;--bg:#f8fafc;--line:#e2e8f0;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
     header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
-    .wrap{max-width:1100px;margin:0 auto;padding:16px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#0369a1);display:grid;place-items:center;color:#fff;font-weight:800}
+    .wrap{max-width:980px;margin:0 auto;padding:14px 16px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--brand),#0369a1);display:grid;place-items:center;color:#fff;font-weight:800}
     .title{font-weight:800}
-    .subtitle{color:var(--muted);font-size:14px}
-    main{max-width:1100px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:320px 1fr;gap:16px}
-    @media (max-width:980px){main{grid-template-columns:1fr}}
+    main{max-width:980px;margin:16px auto;padding:0 16px;display:grid;gap:12px}
     .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 6px rgba(2,8,23,.04)}
-    .card h3{margin:0 0 8px 0;font-size:16px}
     .card .body{padding:14px}
     .muted{color:var(--muted)}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .btn{appearance:none;border:1px solid var(--line);background:#fff;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+    .btn{appearance:none;border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:10px;cursor:pointer;font-weight:600}
     .btn.brand{background:var(--brand);color:#fff;border-color:transparent}
-    .btn.ghost{background:#fff;color:var(--ink)}
     .btn.small{padding:6px 10px;font-size:12px}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    label{font-size:12px;color:var(--muted)}
-    select,input[type="text"],textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font:inherit}
-    textarea{min-height:70px}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line);border-radius:999px;font-size:12px;background:#fff}
-    .pill .dot{width:8px;height:8px;border-radius:50%}
-    .list{max-height:340px;overflow:auto;border-top:1px dashed var(--line)}
-    .doc{display:grid;grid-template-columns:1fr auto;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
-    .doc .name{font-weight:600}
-    .doc .meta{color:var(--muted);font-size:12px}
-    .doc .tag{font-size:11px;background:#ecfeff;border:1px solid #a5f3fc;color:#0369a1;padding:2px 6px;border-radius:999px}
-    .progress{height:8px;background:#f1f5f9;border-radius:999px;overflow:hidden}
-    .progress>div{height:8px;background:var(--brand);width:0%}
-    .grid{display:grid;gap:12px}
-    .qa{display:grid;gap:10px}
-    .cite{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+    .stats{font-size:12px;color:var(--muted)}
+    .drop{border:2px dashed var(--line);border-radius:14px;padding:18px;text-align:center;background:#fff}
+    .drop.drag{border-color:#7dd3fc;background:#f0f9ff}
+    input[type="file"]{display:none}
+    textarea{width:100%;min-height:64px;padding:12px;border:1px solid var(--line);border-radius:12px;font:inherit}
+    .answer{border:1px solid var(--line);border-radius:12px;padding:12px;min-height:64px}
+    .cite{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:10px}
     .cite .hit{padding:8px;border:1px dashed var(--line);border-radius:8px;margin:8px 0}
-    .answer{border:1px solid var(--line);border-radius:12px;padding:12px}
-    .footer{color:var(--muted);font-size:12px;margin-top:16px}
-    .danger{color:var(--bad)}
-    .good{color:var(--ok)}
-    .warn{color:var(--warn)}
+    .good{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
   </style>
 </head>
 <body>
@@ -59,393 +42,222 @@
     <div class="wrap brand">
       <div class="logo">LH</div>
       <div>
-        <div class="title">Lion Hunter — Legal Library (Local RAG, No-API)</div>
-        <div class="subtitle">Private in-browser Q&A over <b>your</b> statutes, case law, regulations, and workshops.</div>
+        <div class="title">Lion Hunter — Ask From Your Docs</div>
+        <div class="muted">Upload → Ask → Auto‑answer. Purely from your materials. No API.</div>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- Left column: Library -->
-    <section class="grid">
-      <div class="card">
-        <div class="body">
-          <h3>Upload documents</h3>
-          <div class="muted" style="margin-bottom:8px">Accepted: <b>PDF</b>, <b>DOCX</b>, <b>TXT</b>, <b>MD</b>. Nothing leaves your browser.</div>
-          <div class="row">
-            <input id="fileInput" type="file" multiple accept=".pdf,.docx,.txt,.md" />
-            <label for="category">Category</label>
-            <select id="category">
-              <option value="statute">Statute</option>
-              <option value="case">Case Law</option>
-              <option value="regulation">Regulation</option>
-              <option value="workshop">Workshop/Questions</option>
-            </select>
-            <button class="btn brand" id="btnAdd">Add to Library</button>
-          </div>
-          <div class="row" style="margin-top:10px">
-            <button class="btn small" id="btnIndex">Build/Update Index</button>
-            <button class="btn small ghost" id="btnExport">Export Library</button>
-            <button class="btn small ghost" id="btnImport">Import Library</button>
-            <button class="btn small" id="btnClear">Clear All</button>
-          </div>
-          <div style="margin-top:10px">
-            <div class="progress"><div id="progBar"></div></div>
-            <div id="progText" class="muted" style="margin-top:6px">Idle.</div>
-          </div>
+    <!-- Upload & tiny stats -->
+    <section class="card">
+      <div class="body">
+        <div id="drop" class="drop" tabindex="0">
+          <div style="font-weight:600;margin-bottom:6px">Drop files here or <label for="fileInput" class="btn brand" style="cursor:pointer">Browse</label></div>
+          <div class="muted">PDF, DOCX, TXT, MD. (Scanned PDFs need OCR.)</div>
+          <input id="fileInput" type="file" multiple accept=".pdf,.docx,.txt,.md" />
         </div>
-        <div class="list" id="docList"></div>
-      </div>
-
-      <div class="card">
-        <div class="body">
-          <h3>Answer settings</h3>
-          <div class="row">
-            <span class="pill"><span class="dot" style="background:var(--brand)"></span>Top-K <input type="text" id="topK" value="6" style="width:56px;text-align:center"/></span>
-            <span class="pill"><span class="dot" style="background:#22c55e"></span>Min relevance <input type="text" id="minScore" value="0.28" style="width:56px;text-align:center"/></span>
-            <span class="pill"><span class="dot" style="background:#f97316"></span>Chunk ~ <span id="chunkInfo">800</span> chars</span>
-          </div>
-          <div class="footer">No API needed. Answers are pulled directly from your citations.</div>
+        <div class="row" style="justify-content:space-between;margin-top:10px">
+          <div class="stats" id="stats">0 documents • 0 chunks</div>
+          <div class="stats" id="toast">Ready.</div>
+          <button class="btn small" id="btnClear">Clear All</button>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="body">
-          <h3>Tips</h3>
-          <ul class="muted" style="margin:8px 0 0 18px">
-            <li>Scanned PDFs (images) won’t extract text. Use OCR first.</li>
-            <li>Everything runs in-browser. No server. Safe for GitHub Pages.</li>
-          </ul>
-        </div>
+        <div style="margin-top:10px;height:8px;background:#f1f5f9;border-radius:999px;overflow:hidden"><div id="bar" style="height:8px;background:var(--brand);width:0%"></div></div>
       </div>
     </section>
 
-    <!-- Right column: Ask -->
-    <section class="grid">
-      <div class="card">
-        <div class="body">
-          <h3>Ask with your Library</h3>
-          <div class="qa">
-            <textarea id="question" placeholder="Example: What is the effect of failure to perfect securities under Ugandan law? Cite from my uploads."></textarea>
-            <div class="row">
-              <button class="btn brand" id="btnAsk">Answer</button>
-              <label><input type="checkbox" id="strictMode" /> Strict: refuse if low evidence</label>
-              <label><input type="checkbox" id="groupByDoc" checked /> Group citations by document</label>
-            </div>
-            <div id="answerBox" class="answer">Ask a question to see results here.</div>
-            <div id="cites" class="cite"></div>
-          </div>
+    <!-- Ask & Auto‑answer -->
+    <section class="card">
+      <div class="body">
+        <textarea id="q" placeholder="Type your question... (auto‑answers)"></textarea>
+        <div class="row" style="margin-top:8px;justify-content:space-between">
+          <div class="muted">Tip: Press <b>Enter</b> to answer immediately. (Shift+Enter = new line)</div>
+          <button class="btn brand" id="askNow">Answer now</button>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="body">
-          <h3>About</h3>
-          <div class="muted">
-            <b>Lion Hunter — Local RAG</b> indexes your private legal library (statutes, case law, regulations, workshops) and answers questions strictly from your materials. <b>No API required.</b>
-          </div>
-          <div class="footer">Not legal advice. Verify against original sources.</div>
-        </div>
+        <div id="a" class="answer" style="margin-top:10px">Upload and ask to see answers here.</div>
+        <div id="cites" class="cite"></div>
       </div>
     </section>
   </main>
 
-  <!-- Dependencies (browser-friendly CDNs) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.16.1/dist/transformers.min.js"></script>
 
   <script>
-  // ----------------------------
-  // Storage (IndexedDB via localForage)
-  // ----------------------------
-  const kv = {
-    docs: localforage.createInstance({ name: 'lh_rag_docs' }),
-    chunks: localforage.createInstance({ name: 'lh_rag_chunks' }),
-    settings: localforage.createInstance({ name: 'lh_rag_settings' })
-  };
-
-  const UI = {
-    list: document.getElementById('docList'),
-    progBar: document.getElementById('progBar'),
-    progText: document.getElementById('progText'),
-    answer: document.getElementById('answerBox'),
-    cites: document.getElementById('cites'),
-  };
-
-  const state = {
-    extractor: null, // may fail to load; we fall back to keyword scoring
-    chunkSize: 800,
-    chunkOverlap: 200,
-  };
-
-  // Utils
-  const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
-  const uid = ()=> Math.random().toString(36).slice(2)+Date.now().toString(36);
-  const ext = (name)=> (name.split('.').pop()||'').toLowerCase();
-  const fmtBytes = (n)=> n>1e6? (n/1e6).toFixed(1)+' MB' : n>1e3? (n/1e3).toFixed(1)+' KB' : n+' B';
-
-  // Init
-  (async ()=>{ await refreshLibrary(); })();
-
-  // Upload -> Add to Library
-  document.getElementById('btnAdd').addEventListener('click', async ()=>{
-    const files = document.getElementById('fileInput').files;
-    const category = document.getElementById('category').value;
-    if(!files || !files.length) return toast('Choose files first');
-    for(const f of files){
-      const id = uid();
-      const meta = { id, name: f.name, size: f.size, type: category, addedAt: Date.now(), ext: ext(f.name) };
-      const buf = await f.arrayBuffer();
-      await kv.docs.setItem(id+':meta', meta);
-      await kv.docs.setItem(id+':bin', buf);
-    }
-    toast('Added to library. Now click “Build/Update Index”.');
-    await refreshLibrary();
-  });
-
-  // Export/Import/Clear
-  document.getElementById('btnExport').addEventListener('click', async ()=>{
-    const dump = { meta: [], chunks: [] };
-    await kv.docs.iterate((val,key)=>{ if(key.endsWith(':meta')) dump.meta.push(val); });
-    await kv.chunks.iterate((val,key)=>{ dump.chunks.push(val); });
-    const blob = new Blob([JSON.stringify(dump)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'lion-hunter-library.json';
-    a.click();
-  });
-
-  document.getElementById('btnImport').addEventListener('click', async ()=>{
-    const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
-    inp.onchange = async ()=>{
-      const file = inp.files[0]; if(!file) return;
-      const text = await file.text();
-      let data; try{ data = JSON.parse(text);}catch(e){ return toast('Invalid JSON'); }
-      if(Array.isArray(data.meta)) for(const m of data.meta) await kv.docs.setItem(m.id+':meta', m);
-      if(Array.isArray(data.chunks)) for(const c of data.chunks) await kv.chunks.setItem(c.id, c);
-      toast('Imported. (Note: binaries/PDFs not included; re-upload if needed.)');
-      await refreshLibrary();
+    // ---------- Storage ----------
+    const kv = {
+      docs: localforage.createInstance({ name: 'lh_simple_docs' }),
+      chunks: localforage.createInstance({ name: 'lh_simple_chunks' })
     };
-    inp.click();
-  });
 
-  document.getElementById('btnClear').addEventListener('click', async ()=>{
-    if(!confirm('Delete all docs and index from this browser?')) return;
-    await kv.docs.clear();
-    await kv.chunks.clear();
-    await refreshLibrary();
-    toast('Cleared.');
-  });
+    // ---------- UI Refs ----------
+    const drop = document.getElementById('drop');
+    const fileInput = document.getElementById('fileInput');
+    const stats = document.getElementById('stats');
+    const toast = document.getElementById('toast');
+    const bar = document.getElementById('bar');
+    const qEl = document.getElementById('q');
+    const askNow = document.getElementById('askNow');
+    const aEl = document.getElementById('a');
+    const citesEl = document.getElementById('cites');
 
-  // Build/Update index (tries embeddings; if not available, uses keyword index only)
-  document.getElementById('btnIndex').addEventListener('click', async ()=>{
-    UI.progBar.style.width='0%'; UI.progText.textContent='Preparing index…';
-    try{
-      // Try to load a local embedder; continue if it fails
+    // ---------- Utils ----------
+    const uid = ()=> Math.random().toString(36).slice(2)+Date.now().toString(36);
+    const ext = (name)=> (name.split('.').pop()||'').toLowerCase();
+    const fmtBytes = (n)=> n>1e6? (n/1e6).toFixed(1)+' MB' : n>1e3? (n/1e3).toFixed(1)+' KB' : n+' B';
+    const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+    const debounce = (fn,ms)=>{ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),ms); }; };
+    function escapeHtml(s){return (s||'').replace(/[&<>"']/g, c=> ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+
+    function setBar(p){ bar.style.width=Math.round(Math.max(0,Math.min(1,p))*100)+'%'; }
+    function say(s){ toast.textContent=s; }
+    function showStats(docCount, chunkCount){ stats.textContent=`${docCount} document${docCount===1?'':'s'} • ${chunkCount} chunk${chunkCount===1?'':'s'}`; }
+
+    // ---------- Init ----------
+    (async function init(){ await refreshStats(); })();
+
+    // ---------- Drag & Drop ----------
+    ['dragenter','dragover'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.add('drag'); }));
+    ;['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', async (e)=>{ const files=[...e.dataTransfer.files]; await addAndIndex(files); autoAnswer(); });
+    drop.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', async ()=>{ const files=[...fileInput.files]; await addAndIndex(files); fileInput.value=''; autoAnswer(); });
+
+    // ---------- Clear ----------
+    document.getElementById('btnClear').addEventListener('click', async ()=>{
+      if(!confirm('Delete all documents and index from this browser?')) return;
+      await kv.docs.clear(); await kv.chunks.clear();
+      showStats(0,0); say('Cleared.'); aEl.textContent='Upload and ask to see answers here.'; citesEl.innerHTML=''; setBar(0);
+    });
+
+    // ---------- Ask (auto) ----------
+    const autoAnswer = debounce(answer, 600);
+    qEl.addEventListener('input', autoAnswer);
+    qEl.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); answer(); }
+    });
+    askNow.addEventListener('click', answer);
+
+    // ---------- Core: Add + Index ----------
+    async function addAndIndex(files){
+      if(!files || !files.length){ say('Choose files first'); return; }
+      say('Adding…');
+      let docsAdded=0, chunksAdded=0;
+      for(const f of files){
+        const id = uid();
+        const meta = { id, name: f.name, size: f.size, ext: ext(f.name), addedAt: Date.now() };
+        const buf = await f.arrayBuffer();
+        await kv.docs.setItem(id+':meta', meta);
+        await kv.docs.setItem(id+':bin', buf);
+        docsAdded++;
+        // index immediately
+        const text = await extractText(meta, buf);
+        if(!text || text.trim().length<20){ say(`No extractable text in ${f.name}. (Is it scanned?)`); continue; }
+        const pieces = chunkText(text, 800, 200);
+        let i=0; for(const p of pieces){
+          const ch = { id: uid(), docId: id, name: meta.name, page: p.page||undefined, text: p.text };
+          await kv.chunks.setItem(ch.id, ch); i++; chunksAdded++;
+          if(i%10===0) setBar(i/pieces.length);
+        }
+        setBar(1);
+      }
+      say(`Added ${docsAdded} doc(s), indexed ${chunksAdded} chunk(s).`);
+      await refreshStats();
+    }
+
+    // ---------- Extract Text ----------
+    async function extractText(meta, buf){
+      const e = (meta.ext||'').toLowerCase();
+      if(e==='pdf') return extractPdf(buf);
+      if(e==='docx') return extractDocx(buf);
+      // txt / md / others → plain
+      try{ return new TextDecoder().decode(buf); }catch{ return ''; }
+    }
+    async function extractPdf(buf){
+      const loadingTask = pdfjsLib.getDocument({data:buf});
+      const pdf = await loadingTask.promise; let out='';
+      for(let p=1;p<=pdf.numPages;p++){
+        const page = await pdf.getPage(p);
+        const content = await page.getTextContent();
+        const text = content.items.map(it=>it.str).join(' ');
+        out += `\n\n[[PAGE ${p}]]\n` + text;
+      }
+      return out;
+    }
+    async function extractDocx(buf){
       try{
-        if(!state.extractor){
-          const { pipeline } = window.transformers;
-          state.extractor = await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2');
-          toast('Embeddings model loaded.');
+        const res = await window.mammoth.extractRawText({arrayBuffer:buf});
+        return res.value || '';
+      }catch{ return ''; }
+    }
+
+    // ---------- Chunking ----------
+    function chunkText(text, size=800, overlap=200){
+      const parts=[]; const blocks = text.split(/\[\[PAGE (\d+)\]\]/g);
+      if(blocks.length>1){
+        for(let i=1;i<blocks.length;i+=2){
+          const pageNum = parseInt(blocks[i],10);
+          const pageText = (blocks[i+1]||'').trim();
+          split(pageText,size,overlap).forEach(t=> parts.push({text:t,page:pageNum}));
         }
-      }catch(e){ toast('No model available — using keyword search only.'); }
-
-      const metas = [];
-      await kv.docs.iterate((val,key)=>{ if(key.endsWith(':meta')) metas.push(val); });
-      let done=0; const total = metas.length || 1;
-
-      for(const meta of metas){
-        done++; setProgress(done/total, `Indexing: ${meta.name}`);
-        const already = await hasChunks(meta.id); if(already) continue;
-        const bin = await kv.docs.getItem(meta.id+':bin');
-        const text = await extractText(meta, bin);
-        if(!text || text.trim().length < 40){ toast(`No extractable text in ${meta.name}. Is it scanned?`); continue; }
-        const pieces = chunkText(text, state.chunkSize, state.chunkOverlap);
-        let i=0;
-        for(const p of pieces){
-          let emb = null;
-          try{ if(state.extractor) emb = await embedText(p.text); }catch(_){}
-          const ch = { id: uid(), docId: meta.id, name: meta.name, type: meta.type, page: p.page||undefined, text: p.text, emb };
-          await kv.chunks.setItem(ch.id, ch);
-          if(++i % 5 === 0){ setProgress(done/total, `Indexing ${meta.name} (${i}/${pieces.length})`); await sleep(10); }
-        }
-      }
-      toast('Index updated.');
-      await refreshLibrary();
-    }catch(err){ console.error(err); alert('Index error: '+err.message); }
-    setProgress(0,'Idle.');
-  });
-
-  // Ask
-  document.getElementById('btnAsk').addEventListener('click', async ()=>{
-    const q = document.getElementById('question').value.trim();
-    if(!q) return toast('Type a question');
-    setAnswer('Thinking…'); UI.cites.innerHTML='';
-    try{
-      // attempt to load on-demand
-      if(!state.extractor){
-        try{ const { pipeline } = window.transformers; state.extractor = await pipeline('feature-extraction','Xenova/all-MiniLM-L6-v2'); }
-        catch(e){ /* ok, fallback */ }
-      }
-      let qEmb = null; if(state.extractor){ try{ qEmb = await embedText(q); }catch(_){} }
-
-      const pool = []; await kv.chunks.iterate((val)=>{ pool.push(val); });
-      if(pool.length===0){ setAnswer('Your index is empty. Upload documents and click “Build/Update Index”.'); return; }
-
-      if(qEmb){
-        for(const c of pool){ c.score = c.emb? dot(qEmb, c.emb) : keywordScore(c.text, q); }
       } else {
-        for(const c of pool){ c.score = keywordScore(c.text, q); }
+        split(text,size,overlap).forEach(t=> parts.push({text:t}));
       }
-      pool.sort((a,b)=> b.score - a.score);
-      const topK = Math.max(1, parseInt(document.getElementById('topK').value||'6',10));
-      const minScore = parseFloat(document.getElementById('minScore').value||'0.28');
-      const hits = pool.filter(x=> x.score>= (qEmb? minScore : 0)).slice(0, topK);
+      return parts;
+    }
+    function split(t,size,overlap){
+      const clean=(t||'').replace(/\s+/g,' ').trim(); const out=[]; let i=0; const step=Math.max(1,size-overlap);
+      while(i<clean.length){ out.push(clean.slice(i,i+size)); i+=step; }
+      return out;
+    }
+
+    // ---------- Keyword Scoring (simple, fast, offline) ----------
+    function keywordScore(text, query){
+      const tok = s => (s||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean);
+      const qT = tok(query); if(qT.length===0) return 0;
+      const tT = tok(text);
+      const freq = new Map(); for(const w of tT){ freq.set(w,(freq.get(w)||0)+1); }
+      let score=0; for(const w of qT){ score += (freq.get(w)||0); }
+      return score / Math.sqrt(tT.length+1);
+    }
+
+    // ---------- Answering ----------
+    async function answer(){
+      const q = qEl.value.trim();
+      if(!q){ aEl.textContent='Type a question…'; citesEl.innerHTML=''; return; }
+      aEl.textContent='Thinking…'; citesEl.innerHTML='';
+      const pool=[]; await kv.chunks.iterate(v=> pool.push(v));
+      if(!pool.length){ aEl.textContent='Your library is empty. Upload a document first.'; return; }
+      for(const c of pool){ c.score = keywordScore(c.text,q); }
+      pool.sort((a,b)=> b.score-a.score);
+      const hits = pool.slice(0,6).filter(h=> h.score>0);
+      if(!hits.length){ aEl.textContent='No relevant passages found in your uploads.'; return; }
       renderCitations(hits);
-
-      const strict = document.getElementById('strictMode').checked;
-      if(strict && hits.length===0){ setAnswer('No sufficiently relevant passages found in your library.'); return; }
-      const answer = extractiveAnswer(q, hits);
-      setAnswer(answer);
-    }catch(e){ console.error(e); setAnswer('Error: '+e.message); }
-  });
-
-  // Helpers ---------------------------------
-  async function refreshLibrary(){
-    const metas = [];
-    await kv.docs.iterate((val,key)=>{ if(key.endsWith(':meta')) metas.push(val); });
-    metas.sort((a,b)=> b.addedAt - a.addedAt);
-    UI.list.innerHTML = '';
-    let counts = {statute:0, case:0, regulation:0, workshop:0};
-    for(const m of metas){ counts[m.type] = (counts[m.type]||0)+1; }
-    const header = document.createElement('div');
-    header.className='doc';
-    header.innerHTML = `<div><div class="name">Library</div><div class="meta">${metas.length} docs — statutes ${counts.statute||0}, cases ${counts.case||0}, regs ${counts.regulation||0}, workshops ${counts.workshop||0}</div></div><div></div>`;
-    UI.list.appendChild(header);
-    for(const m of metas){
-      const row = document.createElement('div'); row.className='doc';
-      const has = await hasChunks(m.id);
-      row.innerHTML = `<div>
-        <div class="name">${escapeHtml(m.name)} <span class="tag">${m.type}</span></div>
-        <div class="meta">${fmtBytes(m.size)} • ${new Date(m.addedAt).toLocaleString()} • ${has?'<span class="good">Indexed</span>':'<span class="warn">Needs indexing</span>'}</div>
-      </div>
-      <div class="row">
-        <button class="btn small" data-act="reindex">Reindex</button>
-        <button class="btn small" data-act="remove">Remove</button>
-      </div>`;
-      row.querySelector('[data-act="reindex"]').onclick = async ()=>{ await deleteChunksFor(m.id); toast('Removed old index for '+m.name+'. Click Build/Update Index.'); await refreshLibrary(); };
-      row.querySelector('[data-act="remove"]').onclick = async ()=>{ if(confirm('Remove '+m.name+'?')){ await removeDoc(m.id); await refreshLibrary(); }};
-      UI.list.appendChild(row);
+      aEl.innerHTML = escapeHtml(summarize(q,hits)).replace(/\n/g,'<br>');
     }
-  }
 
-  async function removeDoc(id){
-    await kv.docs.removeItem(id+':meta');
-    await kv.docs.removeItem(id+':bin');
-    await deleteChunksFor(id);
-  }
-  async function deleteChunksFor(docId){
-    const dels = [];
-    await kv.chunks.iterate((val,key)=>{ if(val.docId===docId) dels.push(key); });
-    for(const k of dels) await kv.chunks.removeItem(k);
-  }
-  async function hasChunks(docId){
-    let found=false; await kv.chunks.iterate((val)=>{ if(val.docId===docId) found=true; }); return found;
-  }
-
-  function setProgress(p, text){ UI.progBar.style.width = Math.max(0,Math.min(100,Math.round(p*100)))+'%'; UI.progText.textContent = text; }
-  function setAnswer(html){ UI.answer.innerHTML = linkify(escapeHtml(html)).replace(/\n/g,'<br>'); }
-  function renderCitations(hits){
-    if(!hits || hits.length===0){ UI.cites.innerHTML = '<span class="muted">No citations yet.</span>'; return; }
-    const group = document.getElementById('groupByDoc').checked;
-    if(group){
-      const byDoc = {};
-      for(const h of hits){ (byDoc[h.docId] ||= {name:h.name,type:h.type,items:[]}).items.push(h); }
-      UI.cites.innerHTML = Object.values(byDoc).map((g)=>{
-        const items = g.items.map(h=>`<div class="hit"><div class="muted">score ${(h.score||0).toFixed(3)}${h.page?` • p.${h.page}`:''}</div><div>${escapeHtml(truncate(h.text,360))}</div></div>`).join('');
-        return `<div><b>${escapeHtml(g.name)}</b> <span class="tag">${g.type}</span>${items}</div>`;
-      }).join('');
-    } else {
-      UI.cites.innerHTML = hits.map(h=>`<div class="hit"><b>${escapeHtml(h.name)}</b> <span class="tag">${h.type}</span> <span class="muted">score ${(h.score||0).toFixed(3)}${h.page?` • p.${h.page}`:''}</span><div>${escapeHtml(truncate(h.text,360))}</div></div>`).join('');
+    function summarize(q,hits){
+      const header = `Answer (from your uploads) — ${hits.length} citation(s):\n`;
+      const bullets = hits.map((h,i)=>`(${i+1}) ${h.name}${h.page?` p.${h.page}`:''}:\n${truncate(h.text,480)}`).join('\n\n');
+      return header + bullets;
     }
-  }
 
-  // Text extraction ---------------------------------
-  async function extractText(meta, buf){
-    const e = (meta.ext||'').toLowerCase();
-    if(e==='pdf') return extractPdf(buf);
-    if(e==='docx') return extractDocx(buf);
-    if(e==='txt' || e==='md') return new TextDecoder().decode(buf);
-    return '';
-  }
-  async function extractPdf(buf){
-    const loadingTask = pdfjsLib.getDocument({data:buf});
-    const pdf = await loadingTask.promise; let out='';
-    for(let p=1;p<=pdf.numPages;p++){
-      const page = await pdf.getPage(p);
-      const content = await page.getTextContent();
-      const text = content.items.map(it=>it.str).join(' ');
-      out += `\n\n[[PAGE ${p}]]\n` + text;
+    function renderCitations(hits){
+      citesEl.innerHTML = hits.map(h=> `
+        <div class="hit">
+          <div class="muted">${escapeHtml(h.name)}${h.page?` • p.${h.page}`:''} • score ${h.score.toFixed(3)}</div>
+          <div>${escapeHtml(truncate(h.text,360))}</div>
+        </div>`).join('');
     }
-    return out;
-  }
-  async function extractDocx(buf){
-    const res = await window.mammoth.extractRawText({arrayBuffer:buf});
-    return res.value || '';
-  }
 
-  function chunkText(text, size=800, overlap=200){
-    const parts = [];
-    const blocks = text.split(/\[\[PAGE (\d+)\]\]/g);
-    if(blocks.length>1){
-      for(let i=1;i<blocks.length;i+=2){
-        const pageNum = parseInt(blocks[i],10);
-        const pageText = (blocks[i+1]||'').trim();
-        splitIntoChunks(pageText, size, overlap).forEach(t=> parts.push({text:t,page:pageNum}));
-      }
-    } else {
-      splitIntoChunks(text, size, overlap).forEach(t=> parts.push({text:t}));
+    function truncate(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n-1)+'…' : s; }
+
+    async function refreshStats(){
+      let d=0,c=0; await kv.docs.iterate((v,k)=>{ if(k.endsWith(':meta')) d++; }); await kv.chunks.iterate(()=>{ c++; });
+      showStats(d,c);
     }
-    return parts;
-  }
-  function splitIntoChunks(text, size, overlap){
-    const clean = text.replace(/\s+/g,' ').trim();
-    const out=[]; let i=0; const step = Math.max(1, size - overlap);
-    while(i < clean.length){ out.push(clean.slice(i, i+size)); i += step; }
-    return out;
-  }
-
-  async function embedText(text){
-    const res = await state.extractor(text, { pooling: 'mean', normalize: true });
-    return Array.from(res.data);
-  }
-
-  function dot(a,b){ let s=0; const n=Math.min(a?.length||0,b?.length||0); for(let i=0;i<n;i++) s += a[i]*b[i]; return s; }
-  function truncate(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n-1)+'…' : s; }
-  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':'&quot;','\'':'&#39;"}[c])); }
-  function linkify(s){ return s.replace(/(https?:\/\/\S+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
-  function toast(msg){ UI.progText.textContent = msg; }
-
-  // Keyword fallback scorer (no model)
-  function keywordScore(text, query){
-    const tokens = t=> (t||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean);
-    const qT = tokens(query); if(qT.length===0) return 0;
-    const tT = tokens(text);
-    const freq = new Map(); for(const w of tT){ freq.set(w, (freq.get(w)||0)+1); }
-    let score = 0; for(const w of qT){ score += (freq.get(w)||0); }
-    return score / Math.sqrt(tT.length+1);
-  }
-
-  // Extractive answer
-  function extractiveAnswer(q, hits){
-    if(!hits || hits.length===0) return 'No sufficiently relevant passages found in your library.';
-    const header = `Answer (from your materials) — ${hits.length} citation(s):\n`;
-    const bullets = hits.map((h,i)=>`(${i+1}) ${h.name}${h.page?` p.${h.page}`:''}:\n${truncate(h.text,500)}`).join('\n\n');
-    return header + bullets + '\n\nTip: Add more authoritative documents to strengthen answers.';
-  }
   </script>
 </body>
 </html>
